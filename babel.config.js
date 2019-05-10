@@ -14,4 +14,8 @@ const presets = [
   ],
 ];
 
+const ignore = [
+  ".spec"
+]
+
 module.exports = { presets };
