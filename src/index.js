@@ -1,2 +1,2 @@
-// import useQuery from './use-query';
-export default {};
+import useQuery from './use-query';
+export default useQuery;
