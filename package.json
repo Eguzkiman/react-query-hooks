@@ -1,0 +1,31 @@
+{
+  "name": "use-query",
+  "version": "0.0.1",
+  "description": "A simple query hook. Inspired by react-async and react-apollo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "./node_modules/.bin/babel src --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eguzkiman/use-query.git"
+  },
+  "author": "Eguzkiman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eguzkiman/use-query/issues"
+  },
+  "homepage": "https://github.com/Eguzkiman/use-query#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "jest": "^24.8.0",
+    "react": "^16.8.6",
+    "react-hooks-testing-library": "^0.5.0"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.4.4"
+  }
+}
