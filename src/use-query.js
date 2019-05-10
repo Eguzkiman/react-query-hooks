@@ -15,7 +15,6 @@ export default function (query) {
 		} catch (e) {
 			setError(e);
 			setLoading(false);
-			throw e;
 		}
 	}
 

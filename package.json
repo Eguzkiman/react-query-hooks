@@ -4,7 +4,7 @@
   "description": "A simple query hook. Inspired by react-async and react-apollo.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "build": "./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
