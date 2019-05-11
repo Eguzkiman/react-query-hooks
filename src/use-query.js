@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
 export default function (query) {
-	let [loading, setLoading] = useState(false);
+	let [loading, setLoading] = useState(true);
 	let [error, setError] = useState(null);
-	let [data, setData] = useState([]);
+	let [data, setData] = useState(null);
 
 	async function fetch () {
 		setLoading(true);
