@@ -32,26 +32,32 @@ describe('use-query hook', () => {
 		let { result } = renderHook(() => useQuery(okFetch));
 	});
 
+	it('returns an object with error, loading & data', () => {
+		let { result: { current } } = renderHook(() => useQuery(okFetch));
+		expect(current.error).toBe(null);
+		expect(current.data).toBe(null);
+		expect(current.loading).toBe(true);
+	});
+
 	describe('when the promise resolves', () => {
-		it('starts loading as true and error as null, then sets loading to false, error is still null and data is added', async () => {
-			let { result, waitForNextUpdate } = renderHook(() => useQuery(okFetch));
-			expect(result.current.loading).toBeTruthy();
-			expect(result.current.error).toBeFalsy();
-			await waitForNextUpdate();
-			expect(result.current.loading).toBeFalsy();
-			expect(result.current.error).toBeFalsy();
+		let { result } = renderHook(() => useQuery(okFetch));
+		it('sets loading to false', async () => {
+			expect(result.current.loading).toBe(false);
+		});
+		it('keeps error as null', () => {
+			expect(result.current.error).toBe(null);
+		});
+		it('sets the resolved value to data', () => {
 			expect(result.current.data).toEqual([1,2,3]);
 		});
-
 	});
 
 	describe('when the promise rejects', () => {
-		it('starts loading as true and error as null, then sets loading to false and error is truthy', async () => {
-			let { result, waitForNextUpdate } = renderHook(() => useQuery(errFetch));
-			expect(result.current.loading).toBeTruthy();
-			expect(result.current.error).toBeFalsy();
-			await waitForNextUpdate();
-			expect(result.current.loading).toBeFalsy();
+		let { result } = renderHook(() => useQuery(errFetch));
+		it('sets loading to false', async () => {
+			expect(result.current.loading).toBe(false);
+		});
+		it('sets the error to error', async () => {
 			expect(result.current.error).toBeTruthy();
 		});
 	});
