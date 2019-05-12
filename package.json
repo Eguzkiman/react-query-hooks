@@ -1,11 +1,14 @@
 {
-  "name": "use-query",
-  "version": "0.0.1",
+  "name": "query-hook",
+  "version": "0.0.2",
   "description": "A simple query hook. Inspired by react-async and react-apollo.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
   "scripts": {
     "test": "jest --watch",
-    "build": "./node_modules/.bin/babel src --out-dir lib"
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "prepare": "yarn run build"
   },
   "repository": {
     "type": "git",
@@ -26,9 +29,17 @@
     "jest": "24.7.1",
     "react": "^16.8.6",
     "react-hooks-testing-library": "^0.5.0",
-    "react-test-renderer": "^16.8.6"
+    "react-test-renderer": "^16.8.6",
+    "rollup": "^1.11.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-peer-deps-external": "^2.2.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4"
+  },
+  "peerDependencies": {
+    "react": "^16.8.6"
   }
 }
