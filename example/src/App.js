@@ -3,19 +3,22 @@ import './App.css';
 import useQuery from 'use-query';
 import axios from 'axios';
 
+import { ErrorState, Loading, List } from './components';
+
 const FETCH_SOMETHING = () => axios('https://jsonplaceholder.typicode.com/users');
 
 function App() {
-	let { error, loading, data } = useQuery(FETCH_SOMETHING);
+	let { error, loading, data, refetch } = useQuery(FETCH_SOMETHING);
 
-	if (error) return <p>Something went wrong! {error}</p>
-	if (loading) return <p>Loading...</p>
+	if (error) return <ErrorState error={error}/>
+	if (loading) return <Loading/>
 
 	return (
-		<ul>
-			{data.data.map(item => <li key={item.id}>{item.name}</li>)}
-		</ul>
-	);
+		<div>
+			<button onClick={refetch}>Refetch</button>
+			<List data={data.data}/>
+		</div>
+	)
 }
 
 export default App;

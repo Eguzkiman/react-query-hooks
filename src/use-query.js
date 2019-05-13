@@ -18,6 +18,13 @@ export default function (query) {
 		}
 	}
 
+	function refetch () {
+		return fetch();
+	}
+
+	// paginación
+	// polling
+
 	useEffect(() => {
 		fetch()
 	}, []);
@@ -25,6 +32,7 @@ export default function (query) {
 	return {
 		error,
 		loading,
-		data
+		data,
+		refetch
 	}
 }

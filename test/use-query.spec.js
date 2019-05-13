@@ -7,22 +7,6 @@ okFetch.mockResolvedValue([1,2,3]);
 const errFetch = jest.fn();
 errFetch.mockRejectedValue(new Error('nel'));
 
-//This is a little hack to silence a warning until react fixes 
-//this: https://github.com/facebook/react/pull/14853
-const originalError = console.error;
-beforeAll(() => {
-	console.error = (...args) => {
-		if (/Warning.*not wrapped in act/.test(args[0])) {
-			return;
-		}
-		originalError.call(console, ...args);
-	}
-});
-
-afterAll(() => {
-	console.error = originalError;
-});
-
 describe('use-query hook', () => {
 	it('is truthy', () => {
 		expect(useQuery).toBeTruthy()
@@ -39,8 +23,13 @@ describe('use-query hook', () => {
 		expect(current.loading).toBe(true);
 	});
 
-	describe('when the promise resolves', () => {
+	it('calls its passed function only once', () => {
 		let { result } = renderHook(() => useQuery(okFetch));
+		expect(okFetch).toBeCalledTimes(1);
+	});
+
+	describe('when the promise resolves', () => {
+		let { result, waitForNextUpdate } = renderHook(() => useQuery(okFetch));
 		it('sets loading to false', async () => {
 			expect(result.current.loading).toBe(false);
 		});
@@ -52,6 +41,7 @@ describe('use-query hook', () => {
 		});
 	});
 
+
 	describe('when the promise rejects', () => {
 		let { result } = renderHook(() => useQuery(errFetch));
 		it('sets loading to false', async () => {
@@ -61,4 +51,33 @@ describe('use-query hook', () => {
 			expect(result.current.error).toBeTruthy();
 		});
 	});
+
+	describe('when refetching', () => {
+		let { result } = renderHook(() => useQuery(errFetch));
+		it('resets loading & clears errors', async () => {
+			result.current.refetch();
+			expect(result.current.loading).toBe(true);
+			expect(result.current.error).toBe(null);
+		});
+		it('it calls the passed funciton only once', async () => {
+			result.current.refetch();
+			expect(errFetch).toBeCalledTimes(1);
+		});
+	});
+});
+
+//This is a little hack to silence a warning until react fixes 
+//this: https://github.com/facebook/react/pull/14853
+const originalError = console.error;
+beforeAll(() => {
+	console.error = (...args) => {
+		if (/Warning.*not wrapped in act/.test(args[0])) {
+			return;
+		}
+		originalError.call(console, ...args);
+	}
+});
+
+afterAll(() => {
+	console.error = originalError;
 });
