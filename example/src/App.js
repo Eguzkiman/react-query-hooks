@@ -5,18 +5,43 @@ import axios from 'axios';
 
 import { ErrorState, Loading, List } from './components';
 
-const FETCH_SOMETHING = () => axios('https://jsonplaceholder.typicode.com/users');
+const FETCH_SOMETHING = ({ start=0, limit=3 }={}) => {
+	return axios(`https://jsonplaceholder.typicode.com/users?_start=${start}&_limit=${limit}`);
+};
+
+const PAGE_SIZE = 3;
 
 function App() {
-	let { error, loading, data, refetch } = useQuery(FETCH_SOMETHING);
+	let {
+		error,
+		isLoading,
+		isLoadingMore,
+		data,
+		refetch,
+		fetchMore
+	} = useQuery(FETCH_SOMETHING);
 
 	if (error) return <ErrorState error={error}/>
-	if (loading) return <Loading/>
+	if (isLoading) return <Loading/>
+
+	function paginate () {
+		return fetchMore({
+			params: { start: data.data.length },
+			updateData (oldData, newData) {
+				return { data: oldData.data.concat(newData.data) };
+			}
+		});
+	}
 
 	return (
 		<div>
 			<button onClick={refetch}>Refetch</button>
 			<List data={data.data}/>
+			{
+				isLoadingMore
+					? <p>Loading more...</p>
+					: <button onClick={paginate}>Fetch More</button>
+			}
 		</div>
 	)
 }
