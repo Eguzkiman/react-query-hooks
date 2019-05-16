@@ -24,15 +24,6 @@ function App() {
 	if (error) return <ErrorState error={error}/>
 	if (isLoading) return <Loading/>
 
-	function paginate () {
-		return fetchMore({
-			params: { start: result.data.length },
-			updateResult (oldResult, newResult) {
-				return { data: oldResult.data.concat(newResult.data) };
-			}
-		});
-	}
-
 	return (
 		<div>
 			<button onClick={refetch}>Refetch</button>
@@ -40,7 +31,7 @@ function App() {
 			{
 				isLoadingMore
 					? <p>Loading more...</p>
-					: <button onClick={paginate}>Fetch More</button>
+					: <button onClick={fetchMore}>Fetch More</button>
 			}
 		</div>
 	)

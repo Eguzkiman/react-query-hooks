@@ -31,7 +31,16 @@ export default function (query) {
 		setLoadingStatus(status);
 	}
 
-	async function fetchMore ({ params, updateResult }) {
+	function defaultUpdateParams ({ result }) {
+		return { start: result.data.length }
+	}
+
+	function defaultUpdateResult (oldResult, newResult) {
+		return { data: oldResult.data.concat(newResult.data) };
+	}
+
+	async function fetchMore ({ updateParams=defaultUpdateParams, updateResult=defaultUpdateResult } = {}) {
+		let params = updateParams({ result });
 		let [newResult, status] = await fetch(params, FETCHING_MORE);
 		let mergedResult = updateResult(result, newResult);
 		setResult(mergedResult);

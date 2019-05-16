@@ -11,7 +11,7 @@ export function ErrorState (props) {
 export function List (props) {
 	return (
 		<ul>
-			{props.data.map(item => <li key={item.id}>{item.name}</li>)}
+			{props.data.map(item => <li key={item.id}>{item.id} | {item.name}</li>)}
 		</ul>
 	);
 }
