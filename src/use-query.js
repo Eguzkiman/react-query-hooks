@@ -11,35 +11,37 @@ import {
 export default function (query) {
 	let [loadingStatus, setLoadingStatus] = useState(FIRST_FETCH);
 	let [error, setError] = useState(null);
-	let [data, setData] = useState(null);
+	let [result, setResult] = useState(null);
 
 	async function fetch (params, statusOnBegin=FIRST_FETCH) {
 		setLoadingStatus(statusOnBegin);
 		setError(null);
 		try {
-			let data = await query(params);
-			setLoadingStatus(READY);
-			return data;
+			let result = await query(params);
+			return [result, READY];
 		} catch (e) {
 			setError(e);
-			setLoadingStatus(ERROR);
+			return [e, ERROR];
 		}
 	}
 
 	async function refetch (params) {
-		let data = await fetch(params, REFETCHING);
-		setData(data);
+		let [result, status] = await fetch(params, REFETCHING);
+		setResult(result);
+		setLoadingStatus(status);
 	}
 
-	async function fetchMore ({ params, updateData }) {
-		let newData = await fetch(params, FETCHING_MORE);
-		let mergedData = updateData(data, newData);
-		setData(mergedData);
+	async function fetchMore ({ params, updateResult }) {
+		let [newResult, status] = await fetch(params, FETCHING_MORE);
+		let mergedResult = updateResult(result, newResult);
+		setResult(mergedResult);
+		setLoadingStatus(status);
 	}
 
 	async function firstFetch () {
-		let data = await fetch({}, FIRST_FETCH);
-		setData(data)
+		let [result, status] = await fetch({}, FIRST_FETCH);
+		setResult(result);
+		setLoadingStatus(status);
 	}
 
 	useEffect(() => {
@@ -52,10 +54,9 @@ export default function (query) {
 	let isPolling = loadingStatus === POLLING;
 
 	// let isFetchingSomething = isLoading || isReloading || isLoadingMore || isPolling;
-
 	return {
 		error,
-		data,
+		result,
 		refetch,
 		fetchMore,
 		loadingStatus,

@@ -16,7 +16,7 @@ function App() {
 		error,
 		isLoading,
 		isLoadingMore,
-		data,
+		result,
 		refetch,
 		fetchMore
 	} = useQuery(FETCH_SOMETHING);
@@ -26,9 +26,9 @@ function App() {
 
 	function paginate () {
 		return fetchMore({
-			params: { start: data.data.length },
-			updateData (oldData, newData) {
-				return { data: oldData.data.concat(newData.data) };
+			params: { start: result.data.length },
+			updateResult (oldResult, newResult) {
+				return { data: oldResult.data.concat(newResult.data) };
 			}
 		});
 	}
@@ -36,7 +36,7 @@ function App() {
 	return (
 		<div>
 			<button onClick={refetch}>Refetch</button>
-			<List data={data.data}/>
+			<List data={result.data}/>
 			{
 				isLoadingMore
 					? <p>Loading more...</p>

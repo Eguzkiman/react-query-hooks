@@ -27,7 +27,7 @@ describe('use-query hook', () => {
 	it('returns an object with error, isLoading & data', () => {
 		let { result: { current } } = renderHook(() => useQuery(okFetch));
 		expect(current.error).toBe(null);
-		expect(current.data).toBe(null);
+		expect(current.result).toBe(null);
 		expect(current.loadingStatus).toBe(FIRST_FETCH);
 		expect(current.isLoading).toBe(true);
 	});
@@ -46,7 +46,7 @@ describe('use-query hook', () => {
 			expect(result.current.error).toBe(null);
 		});
 		it('sets the resolved value to data', () => {
-			expect(result.current.data).toEqual([1,2,3]);
+			expect(result.current.result).toEqual([1,2,3]);
 		});
 		it('sets the loadingStatus to READY', async () => {
 			expect(result.current.loadingStatus).toBe(READY);
