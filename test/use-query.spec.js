@@ -69,9 +69,10 @@ describe('use-query hook', () => {
 
 	describe('when refetching', () => {
 		let { result } = renderHook(() => useQuery(errFetch));
-		it('resets loading & clears errors', async () => {
+		it('resets isReloading & clears errors & sets loadingStatus to REFETCHING', async () => {
 			result.current.refetch();
-			expect(result.current.loading).toBe(true);
+			expect(result.current.isReloading).toBe(true);
+			expect(result.current.loadingStatus).toBe(REFETCHING);
 			expect(result.current.error).toBe(null);
 		});
 		it('calls the passed funciton only once', async () => {

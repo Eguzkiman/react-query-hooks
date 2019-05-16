@@ -13,10 +13,12 @@ export default function (query) {
 	let [error, setError] = useState(null);
 	let [data, setData] = useState(null);
 
-	async function fetch (params) {
+	async function fetch (params, statusOnBegin=FIRST_FETCH) {
+		setLoadingStatus(statusOnBegin);
 		setError(null);
 		try {
 			let data = await query(params);
+			setLoadingStatus(READY);
 			return data;
 		} catch (e) {
 			setError(e);
@@ -25,25 +27,23 @@ export default function (query) {
 	}
 
 	async function refetch (params) {
-		setLoadingStatus(REFETCHING);
-		let data = await fetch(params);
+		let data = await fetch(params, REFETCHING);
 		setData(data);
-		setLoadingStatus(READY)
 	}
 
 	async function fetchMore ({ params, updateData }) {
-		setLoadingStatus(FETCHING_MORE);
-		let newData = await fetch(params);
+		let newData = await fetch(params, FETCHING_MORE);
 		let mergedData = updateData(data, newData);
 		setData(mergedData);
-		setLoadingStatus(READY)
+	}
+
+	async function firstFetch () {
+		let data = await fetch({}, FIRST_FETCH);
+		setData(data)
 	}
 
 	useEffect(() => {
-		fetch().then(data => {
-			setData(data)
-			setLoadingStatus(READY);
-		});
+		firstFetch();
 	}, []);
 
 	let isLoading = loadingStatus === FIRST_FETCH;
