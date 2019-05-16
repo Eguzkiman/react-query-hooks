@@ -131,54 +131,99 @@ describe('use-query hook', () => {
 
 	describe('when fetching more', () => {
 		describe('when request is in flight', () => {
-			let { result } = renderHook(() => useQuery(okFetch));
-
-			beforeEach(() => {
-				result.current.fetchMore();
+			let result, promise;
+			beforeEach(async () => {
+				let hook = renderHook(() => useQuery(okFetch));
+				result = hook.result;
+				
+				promise = new Promise(async (resolve) => {
+					await hook.waitForNextUpdate();
+					result.current.fetchMore();
+					resolve();
+				});
 			});
 
 			it('sets isLoadingMore to true, sets loadingStatus to FETCHING_MORE', async () => {
+				await promise;
 				expect(result.current.isLoadingMore).toBe(true);
 				expect(result.current.loadingStatus).toBe(FETCHING_MORE);
 				expect(result.current.error).toBe(null);
 			});
 			it('calls the passed funciton only once', async () => {
-				expect(okFetch).toBeCalledTimes(1);
+				await promise;
+				expect(okFetch).toBeCalledTimes(2);
+			});
+			it('calls the passed function with the default pagination params', async () => {
+				await promise;
+				expect(okFetch).toBeCalledWith({ start: 0 });
+				expect(okFetch).toBeCalledWith({ start: 3 });
 			});
 		})
 
 		describe('when the promise resolves', () => {
-			let result, waitForNextUpdate;
+			let result, promise;
 			beforeEach(async () => {
 				okFetch.mockReturnValueOnce({ data: [1,2,3] });
 				okFetch.mockReturnValueOnce({ data: [4,5,6] });
-
 				let hook = renderHook(() => useQuery(okFetch));
-
 				result = hook.result;
-				waitForNextUpdate = hook.waitForNextUpdate;
-
-				await waitForNextUpdate();
-
-				result.current.fetchMore();
-
-				await waitForNextUpdate();
+				promise = new Promise(async (resolve) => {
+					await hook.waitForNextUpdate();
+					await result.current.fetchMore();
+					resolve();
+				});
 			});
 
 			it('sets isLoadingMore to false', async () => {
+				await promise;
 				expect(result.current.isLoadingMore).toBe(false);
 			});
-			it('keeps error as null', () => {
+			it('keeps error as null', async () => {
+				await promise;
 				expect(result.current.error).toBe(null);
 			});
-			it('sets the resolved value to data', () => {
-				console.log(result.current.result);
+			it('sets the resolved value to data', async () => {
+				await promise;
 				expect(result.current.result).toEqual({ data: [1,2,3,4,5,6]});
 			});
 			it('sets the loadingStatus to READY', async () => {
+				await promise;
 				expect(result.current.loadingStatus).toBe(READY);
 			});
 		});
+
+		describe('when the promise rejects', () => {
+			let result, promise;
+			beforeEach(async () => {
+				errFetch.mockReturnValueOnce({ data: [1,2,3] });
+				errFetch.mockRejectedValueOnce(new Error('nel pastel'));
+
+				let hook = renderHook(() => useQuery(errFetch));
+				result = hook.result;
+				promise = new Promise(async (resolve) => {
+					await hook.waitForNextUpdate();
+					await result.current.fetchMore();
+					resolve();
+				});
+			});
+
+			it('sets isLoadingMore to false', async () => {
+				await promise;
+				expect(result.current.isLoadingMore).toBe(false);
+			});
+			it('sets error', async () => {
+				await promise;
+				expect(result.current.error).toBeTruthy();
+			});
+			it("data doesn't change", async () => {	
+				await promise;
+				expect(result.current.result).toEqual({ data: [1,2,3] });
+			});
+			it('sets the loadingStatus to ERROR', async () => {
+				await promise;
+				expect(result.current.loadingStatus).toBe(ERROR);
+			});
+		})
 	});
 });
 

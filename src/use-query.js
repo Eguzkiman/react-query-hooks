@@ -42,19 +42,21 @@ export default function (query) {
 	async function fetchMore ({ updateParams=defaultUpdateParams, updateResult=defaultUpdateResult } = {}) {
 		let params = updateParams({ result });
 		let [newResult, status] = await fetch(params, FETCHING_MORE);
+		setLoadingStatus(status);
+		if (status === ERROR)
+			return;
 		let mergedResult = updateResult(result, newResult);
 		setResult(mergedResult);
-		setLoadingStatus(status);
 	}
 
-	async function firstFetch () {
-		let [result, status] = await fetch({}, FIRST_FETCH);
+	async function firstFetch (params={}) {
+		let [result, status] = await fetch(params, FIRST_FETCH);
 		setResult(result);
 		setLoadingStatus(status);
 	}
 
 	useEffect(() => {
-		firstFetch();
+		firstFetch({ start: 0 });
 	}, []);
 
 	let isLoading = loadingStatus === FIRST_FETCH;
