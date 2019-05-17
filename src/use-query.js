@@ -8,7 +8,7 @@ import {
 	ERROR
 } from './utils/loading-status';
 
-export default function (query) {
+export default function (query, options={}) {
 	let [loadingStatus, setLoadingStatus] = useState(FIRST_FETCH);
 	let [error, setError] = useState(null);
 	let [result, setResult] = useState(null);
@@ -39,12 +39,13 @@ export default function (query) {
 		return { data: oldResult.data.concat(newResult.data) };
 	}
 
-	async function fetchMore ({ updateParams=defaultUpdateParams, updateResult=defaultUpdateResult } = {}) {
+	async function fetchMore ({ updateParams, updateResult } = {}) {
+		updateParams = updateParams || options.updateParams || defaultUpdateParams;
+		updateResult = updateResult || options.updateResult || defaultUpdateResult;
 		let params = updateParams({ result });
 		let [newResult, status] = await fetch(params, FETCHING_MORE);
 		setLoadingStatus(status);
-		if (status === ERROR)
-			return;
+		if (status === ERROR) return;
 		let mergedResult = updateResult(result, newResult);
 		setResult(mergedResult);
 	}

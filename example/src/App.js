@@ -19,7 +19,13 @@ function App() {
 		result,
 		refetch,
 		fetchMore
-	} = useQuery(FETCH_SOMETHING);
+	} = useQuery(FETCH_SOMETHING, {
+		// updateParams,
+		// updateResult,
+		// pollInterval,
+		// fetchOnRender,
+
+	});
 
 	if (error) return <ErrorState error={error}/>
 	if (isLoading) return <Loading/>

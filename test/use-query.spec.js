@@ -15,6 +15,37 @@ okFetch.mockResolvedValue({ data: [1,2,3]});
 const errFetch = jest.fn();
 errFetch.mockRejectedValue(new Error('nel'));
 
+const customFetch = jest.fn();
+
+const restResultPage1 = { 
+	data: {
+		users: [{
+			name: 'User 1'
+		}, {
+			name: 'User 2'
+		}, {
+			name: 'User 3'
+		}]
+	} 
+}
+const restResultPage2 = { 
+	data: {
+		users: [{
+			name: 'User 4'
+		}, {
+			name: 'User 5'
+		}, {
+			name: 'User 6'
+		}]
+	} 
+};
+
+let updateParams = ({ result }) => {
+	return { offset: result.data.users.length }
+}
+let updateResult = (oldResult, newResult) => {
+	return { users: oldResult.data.users.concat(newResult.data.users) }
+}
 
 describe('use-query hook', () => {
 	it('is truthy', () => {
@@ -215,7 +246,7 @@ describe('use-query hook', () => {
 				await promise;
 				expect(result.current.error).toBeTruthy();
 			});
-			it("data doesn't change", async () => {	
+			it("result doesn't change", async () => {	
 				await promise;
 				expect(result.current.result).toEqual({ data: [1,2,3] });
 			});
@@ -224,6 +255,43 @@ describe('use-query hook', () => {
 				expect(result.current.loadingStatus).toBe(ERROR);
 			});
 		})
+	});
+	describe('when fetching more with customFetch', () => {
+		let result, promise;
+		beforeAll(async () => {
+			customFetch.mockReturnValueOnce(restResultPage1);
+			customFetch.mockReturnValueOnce(restResultPage2);
+			let hook = renderHook(() => useQuery(customFetch));
+			result = hook.result;
+			promise = new Promise(async (resolve) => {
+				await hook.waitForNextUpdate();
+				await result.current.fetchMore({ updateParams, updateResult });
+				resolve();
+			});
+		})
+		it('merges results correctly when fetchingMore in a customFetch', async () => {
+			await promise;
+			expect(result.current.result).toEqual({ users: restResultPage1.data.users.concat(restResultPage2.data.users) });
+		});
+	});
+
+	describe('when fetching more with query options param', () => {
+		let result, promise;
+		beforeAll(async () => {
+			customFetch.mockReturnValueOnce(restResultPage1);
+			customFetch.mockReturnValueOnce(restResultPage2);
+			let hook = renderHook(() => useQuery(customFetch, { updateParams, updateResult }));
+			result = hook.result;
+			promise = new Promise(async (resolve) => {
+				await hook.waitForNextUpdate();
+				await result.current.fetchMore();
+				resolve();
+			});
+		});
+		it('merges results correctly when fetchingMore with query options param', async () => {
+			await promise;
+			expect(result.current.result).toEqual({ users: restResultPage1.data.users.concat(restResultPage2.data.users) });
+		});
 	});
 });
 
