@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import useQuery from 'use-query';
 import axios from 'axios';
@@ -12,19 +12,23 @@ const FETCH_SOMETHING = ({ start=0, limit=3 }={}) => {
 const PAGE_SIZE = 3;
 
 function App() {
+
 	let {
 		error,
 		isLoading,
 		isLoadingMore,
+		isPolling,
 		result,
 		refetch,
-		fetchMore
+		fetchMore,
+		isPollingActive,
+		startPolling,
+		stopPolling
 	} = useQuery(FETCH_SOMETHING, {
 		// updateParams,
 		// updateResult,
-		// pollInterval,
+		pollInterval: 1000,
 		// fetchOnRender,
-
 	});
 
 	if (error) return <ErrorState error={error}/>
@@ -38,6 +42,14 @@ function App() {
 				isLoadingMore
 					? <p>Loading more...</p>
 					: <button onClick={fetchMore}>Fetch More</button>
+			}
+			{
+				isPollingActive
+					? <button onClick={stopPolling}>Stop!</button>
+					: <button onClick={startPolling}>Start!</button>
+			}
+			{
+				isPolling && <p>Polling!</p>
 			}
 		</div>
 	)

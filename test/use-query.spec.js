@@ -186,7 +186,7 @@ describe('use-query hook', () => {
 			});
 			it('calls the passed function with the default pagination params', async () => {
 				await promise;
-				expect(okFetch).toBeCalledWith({ start: 0 });
+				expect(okFetch).toBeCalledWith({});
 				expect(okFetch).toBeCalledWith({ start: 3 });
 			});
 		})

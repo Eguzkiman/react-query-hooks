@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
 	FIRST_FETCH,
 	FETCHING_MORE,
@@ -13,14 +13,47 @@ export default function (query, options={}) {
 	let [error, setError] = useState(null);
 	let [result, setResult] = useState(null);
 
+	let pollTimeout = useRef(null);
+	let inFlightRequest = useRef(null);
+
+	let [isPollingActive, setPollingActive] = useState(false);
+
+	useEffect(() => {
+		firstFetch({});
+	}, []);
+
+	useEffect(() => {
+		startPolling();
+		return stopPolling;
+	}, [options.pollInterval]);
+
+	async function startPolling () {
+		stopPolling();
+		if (options.pollInterval) {
+			if (inFlightRequest.current) await inFlightRequest.current;
+			setTimeout(() => {
+				setPollingActive(true);
+				poll();
+			});
+		}
+	}
+
+	function stopPolling () {
+		setPollingActive(false);
+		clearTimeout(pollTimeout.current)
+	}
+
 	async function fetch (params, statusOnBegin=FIRST_FETCH) {
 		setLoadingStatus(statusOnBegin);
 		setError(null);
+
 		try {
-			let result = await query(params);
+			inFlightRequest.current = query(params);
+			let result = await inFlightRequest.current;
 			return [result, READY];
 		} catch (e) {
 			setError(e);
+			inFlightRequest.current = null;
 			return [e, ERROR];
 		}
 	}
@@ -29,6 +62,15 @@ export default function (query, options={}) {
 		let [result, status] = await fetch(params, REFETCHING);
 		setResult(result);
 		setLoadingStatus(status);
+	}
+
+	async function poll (params) {
+		pollTimeout.current = setTimeout(async () => {
+			let [result, status] = await fetch(params, POLLING);
+			setResult(result);
+			setLoadingStatus(status);
+			poll();
+		}, options.pollInterval)
 	}
 
 	function defaultUpdateParams ({ result }) {
@@ -56,10 +98,6 @@ export default function (query, options={}) {
 		setLoadingStatus(status);
 	}
 
-	useEffect(() => {
-		firstFetch({ start: 0 });
-	}, []);
-
 	let isLoading = loadingStatus === FIRST_FETCH;
 	let isReloading = loadingStatus === REFETCHING;
 	let isLoadingMore = loadingStatus === FETCHING_MORE;
@@ -75,6 +113,9 @@ export default function (query, options={}) {
 		isLoading,
 		isReloading,
 		isLoadingMore,
-		isPolling
+		isPollingActive,
+		isPolling,
+		startPolling,
+		stopPolling
 	}
 }
