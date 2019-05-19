@@ -117,13 +117,12 @@ describe('use-query hook', () => {
 			it('calls the passed funciton only once', async () => {
 				expect(okFetch).toBeCalledTimes(1);
 			});
-		})
+		});
 
 		describe('when the promise resolves', () => {
 			let { result, waitForNextUpdate } = renderHook(() => useQuery(okFetch));
-			beforeEach(async () => {
-				result.current.refetch();
-				await waitForNextUpdate();
+			beforeEach(() => {
+				return result.current.refetch();
 			});
 
 			it('sets isReloading to false', async () => {
@@ -291,6 +290,50 @@ describe('use-query hook', () => {
 		it('merges results correctly when fetchingMore with query options param', async () => {
 			await promise;
 			expect(result.current.result).toEqual({ users: restResultPage1.data.users.concat(restResultPage2.data.users) });
+		});
+	});
+
+	describe('when polling', () => {
+		let hook, result, pollStarted, pollCompleted;
+		beforeEach(async () => {
+			hook = renderHook(() => useQuery(okFetch, { pollInterval: 100 }));
+			result = hook.result;
+			pollStarted = new Promise(async (resolve) => {
+				await hook.waitForNextUpdate(); // first fetch
+				await hook.waitForNextUpdate(); // first poll
+				resolve();
+			});
+			pollCompleted = new Promise(async (resolve) => {
+				await pollStarted;
+				await hook.waitForNextUpdate();
+				resolve();
+			});
+		});
+
+		afterEach(() => {
+			hook.unmount();
+		});
+
+		it('waits until first fetch is finished to do polling', async () => {
+			await pollStarted;
+			expect(result.current.loadingStatus).toBe(POLLING);
+		});
+
+		it('updates data with new result', async () => {
+			okFetch.mockResolvedValueOnce({ data: ['updated', 2, 3] });
+			await pollCompleted;
+			expect(result.current.result).toEqual({ data: ['updated', 2, 3] });
+		});
+
+		it('stops & resumes polling with stopPolling & startPolling', async () => {
+			await pollCompleted;
+			expect(okFetch).toBeCalledTimes(2); // inial fetch & first poll;
+			result.current.stopPolling();
+			await new Promise(resolve => setTimeout(resolve, 200));
+			expect(okFetch).toBeCalledTimes(2);
+			result.current.startPolling();
+			await new Promise(resolve => setTimeout(resolve, 200));
+			expect(okFetch).toBeCalledTimes(3);
 		});
 	});
 });

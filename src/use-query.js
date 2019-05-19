@@ -16,8 +16,6 @@ export default function (query, options={}) {
 	let pollTimeout = useRef(null);
 	let inFlightRequest = useRef(null);
 
-	let [isPollingActive, setPollingActive] = useState(false);
-
 	useEffect(() => {
 		firstFetch({});
 	}, []);
@@ -32,24 +30,24 @@ export default function (query, options={}) {
 		if (options.pollInterval) {
 			if (inFlightRequest.current) await inFlightRequest.current;
 			setTimeout(() => {
-				setPollingActive(true);
 				poll();
 			});
 		}
 	}
 
 	function stopPolling () {
-		setPollingActive(false);
 		clearTimeout(pollTimeout.current)
+		pollTimeout.current = null;
 	}
 
-	async function fetch (params, statusOnBegin=FIRST_FETCH) {
+	async function fetch (params, statusOnBegin) {
 		setLoadingStatus(statusOnBegin);
 		setError(null);
 
 		try {
 			inFlightRequest.current = query(params);
 			let result = await inFlightRequest.current;
+			inFlightRequest.current = null;
 			return [result, READY];
 		} catch (e) {
 			setError(e);
@@ -70,7 +68,7 @@ export default function (query, options={}) {
 			setResult(result);
 			setLoadingStatus(status);
 			poll();
-		}, options.pollInterval)
+		}, options.pollInterval);
 	}
 
 	function defaultUpdateParams ({ result }) {
@@ -92,7 +90,7 @@ export default function (query, options={}) {
 		setResult(mergedResult);
 	}
 
-	async function firstFetch (params={}) {
+	async function firstFetch (params) {
 		let [result, status] = await fetch(params, FIRST_FETCH);
 		setResult(result);
 		setLoadingStatus(status);
@@ -113,7 +111,6 @@ export default function (query, options={}) {
 		isLoading,
 		isReloading,
 		isLoadingMore,
-		isPollingActive,
 		isPolling,
 		startPolling,
 		stopPolling

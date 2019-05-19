@@ -21,7 +21,6 @@ function App() {
 		result,
 		refetch,
 		fetchMore,
-		isPollingActive,
 		startPolling,
 		stopPolling
 	} = useQuery(FETCH_SOMETHING, {
@@ -42,11 +41,6 @@ function App() {
 				isLoadingMore
 					? <p>Loading more...</p>
 					: <button onClick={fetchMore}>Fetch More</button>
-			}
-			{
-				isPollingActive
-					? <button onClick={stopPolling}>Stop!</button>
-					: <button onClick={startPolling}>Start!</button>
 			}
 			{
 				isPolling && <p>Polling!</p>
