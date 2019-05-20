@@ -29,9 +29,7 @@ export default function (query, options={}) {
 		stopPolling();
 		if (options.pollInterval) {
 			if (inFlightRequest.current) await inFlightRequest.current;
-			setTimeout(() => {
-				poll();
-			});
+			setTimeout(poll);
 		}
 	}
 
@@ -42,12 +40,12 @@ export default function (query, options={}) {
 
 	async function fetch (params, statusOnBegin) {
 		setLoadingStatus(statusOnBegin);
-		setError(null);
 
 		try {
 			inFlightRequest.current = query(params);
 			let result = await inFlightRequest.current;
 			inFlightRequest.current = null;
+			if (error) setTimeout(() => setError(null))
 			return [result, READY];
 		} catch (e) {
 			setError(e);

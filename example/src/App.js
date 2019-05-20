@@ -17,6 +17,7 @@ function App() {
 		error,
 		isLoading,
 		isLoadingMore,
+		isReloading,
 		isPolling,
 		result,
 		refetch,
@@ -30,8 +31,8 @@ function App() {
 		// fetchOnRender,
 	});
 
-	if (error) return <ErrorState error={error}/>
-	if (isLoading) return <Loading/>
+	if (error) return <ErrorState error={error} onRetry={refetch}/>
+	if (isLoading || isReloading) return <Loading/>
 
 	return (
 		<div>

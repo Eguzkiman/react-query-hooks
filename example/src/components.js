@@ -5,7 +5,12 @@ export function Loading (props) {
 }
 
 export function ErrorState (props) {
-	return <p>Whoops! {props.error}</p>
+	return (
+		<div>
+			<p>Whoops! {String(props.error)}</p>
+			<button onClick={props.onRetry}>retry</button>
+		</div>
+	)
 }
 
 export function List (props) {
