@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import './App.css';
-import useQuery from 'use-query';
+import { useQuery } from 'use-query';
 import axios from 'axios';
-
 import { ErrorState, Loading, List } from './components';
 
 const FETCH_SOMETHING = ({ start=0, limit=3 }={}) => {
 	return axios(`https://jsonplaceholder.typicode.com/users?_start=${start}&_limit=${limit}`);
 };
 
+console.log(useQuery)
 const PAGE_SIZE = 3;
 
 function App() {

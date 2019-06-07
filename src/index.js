@@ -1,2 +1,1 @@
-import useQuery from './use-query';
-export default useQuery;
+export { useQuery } from './use-query';

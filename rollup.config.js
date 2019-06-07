@@ -30,6 +30,7 @@ export default {
     // svgr(),
     babel({
       exclude: 'node_modules/**',
+      plugins: ["@babel/plugin-proposal-export-default-from"]
       // plugins: [ 'external-helpers' ]
     }),
     resolve(),

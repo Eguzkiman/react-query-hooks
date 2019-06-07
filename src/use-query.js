@@ -8,7 +8,7 @@ import {
 	ERROR
 } from './utils/loading-status';
 
-export default function (query, options={}) {
+export function useQuery (query, options={}) {
 	let [loadingStatus, setLoadingStatus] = useState(FIRST_FETCH);
 	let [error, setError] = useState(null);
 	let [result, setResult] = useState(null);
@@ -34,37 +34,37 @@ export default function (query, options={}) {
 	}
 
 	function stopPolling () {
-		clearTimeout(pollTimeout.current)
+		clearTimeout(pollTimeout.current);
 		pollTimeout.current = null;
 	}
 
-	async function fetch (params, statusOnBegin) {
+	async function fetch (params, statusOnBegin, updateResult) {
 		setLoadingStatus(statusOnBegin);
 
 		try {
 			inFlightRequest.current = query(params);
-			let result = await inFlightRequest.current;
+			let newResult = await inFlightRequest.current;
 			inFlightRequest.current = null;
-			if (error) setTimeout(() => setError(null))
-			return [result, READY];
+			if (error) setTimeout(() => setError(null));
+			let mergedResult = updateResult ? updateResult(result, newResult) : newResult;
+			// setTimeout(() => {
+				setResult(mergedResult);
+				setLoadingStatus(READY);
+			// });
 		} catch (e) {
 			setError(e);
 			inFlightRequest.current = null;
-			return [e, ERROR];
+			setLoadingStatus(ERROR)
 		}
 	}
 
 	async function refetch (params) {
-		let [result, status] = await fetch(params, REFETCHING);
-		setResult(result);
-		setLoadingStatus(status);
+		fetch(params, REFETCHING);
 	}
 
 	async function poll (params) {
 		pollTimeout.current = setTimeout(async () => {
-			let [result, status] = await fetch(params, POLLING);
-			setResult(result);
-			setLoadingStatus(status);
+			await fetch(params, POLLING);
 			poll();
 		}, options.pollInterval);
 	}
@@ -80,18 +80,13 @@ export default function (query, options={}) {
 	async function fetchMore ({ updateParams, updateResult } = {}) {
 		updateParams = updateParams || options.updateParams || defaultUpdateParams;
 		updateResult = updateResult || options.updateResult || defaultUpdateResult;
+
 		let params = updateParams({ result });
-		let [newResult, status] = await fetch(params, FETCHING_MORE);
-		setLoadingStatus(status);
-		if (status === ERROR) return;
-		let mergedResult = updateResult(result, newResult);
-		setResult(mergedResult);
+		fetch(params, FETCHING_MORE, updateResult);
 	}
 
 	async function firstFetch (params) {
-		let [result, status] = await fetch(params, FIRST_FETCH);
-		setResult(result);
-		setLoadingStatus(status);
+		fetch(params, FIRST_FETCH);
 	}
 
 	let isLoading = loadingStatus === FIRST_FETCH;
@@ -99,7 +94,6 @@ export default function (query, options={}) {
 	let isLoadingMore = loadingStatus === FETCHING_MORE;
 	let isPolling = loadingStatus === POLLING;
 
-	// let isFetchingSomething = isLoading || isReloading || isLoadingMore || isPolling;
 	return {
 		error,
 		result,
