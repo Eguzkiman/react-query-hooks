@@ -9,7 +9,7 @@ import {
 } from './utils/loading-status';
 
 export function useQuery (query, options={}) {
-	let [loadingStatus, setLoadingStatus] = useState(FIRST_FETCH);
+	let [loadingStatus, setLoadingStatus] = useState(options.skip ? READY : FIRST_FETCH);
 	let [error, setError] = useState(null);
 	let [result, setResult] = useState(null);
 
@@ -63,8 +63,10 @@ export function useQuery (query, options={}) {
 	}
 
 	async function poll (params) {
+		console.log('hithere')
 		pollTimeout.current = setTimeout(async () => {
-			await fetch(params, POLLING);
+			if (!options.skip)
+				await fetch(params, POLLING);
 			poll();
 		}, options.pollInterval);
 	}
@@ -86,6 +88,7 @@ export function useQuery (query, options={}) {
 	}
 
 	async function firstFetch (params) {
+		if (options.skip) return;
 		fetch(params, FIRST_FETCH);
 	}
 

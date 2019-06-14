@@ -1,6 +1,6 @@
 {
   "name": "react-query-hooks",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple query hook. Inspired by react-async and react-apollo.",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
