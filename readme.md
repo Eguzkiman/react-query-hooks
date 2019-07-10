@@ -14,10 +14,14 @@ React Query Hooks comes with useful defaults to let you hit the ground running, 
 React Query Hooks has zero dependencies, and works with any app using React ^16.8.0
 
 To install:
-`yarn add react-query-hooks`
+```
+yarn add react-query-hooks
+```
 
 Or with npm:
-`npm install —save react-query-hooks`
+```
+npm install —save react-query-hooks
+```
 
 ## Usage
 Let’s build a quick app that fetches data from [JSONPlaceholder](https://jsonplaceholder.typicode.com/) and renders it on a list.
