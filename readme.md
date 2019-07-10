@@ -64,10 +64,10 @@ And that's pretty much it. Your code should end up looking somewhat like this:
 import axios from 'axios';
 import { useQuery } from 'react-query-hooks';
 
-const USERS_URL = "https://jsonplaceholder.typicode.com/users";
+const fetchUsers = () => axios("https://jsonplaceholder.typicode.com/users");
 
 function Userlist () {
-	let users = useQuery(() => axios(USERS_URL));
+	let users = useQuery(fetchUsers);
 
 	if (users.loading) return <p>Loading...</p>;
 	if (users.error) return <p>Error!</p>;
