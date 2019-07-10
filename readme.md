@@ -72,9 +72,8 @@ function Userlist () {
 	if (users.loading) return <p>Loading...</p>;
 	if (users.error) return <p>Error!</p>
 
-	<ul>
+	return <ul>
 		{users.result.data.map(user => <li>{user.name}</li>)}
 	</ul>
 }
 ```
-#blogpost
