@@ -1,5 +1,5 @@
 import { renderHook, act } from 'react-hooks-testing-library'
-import useQuery from '../src/use-query';
+import { useQuery } from '../src/use-query';
 import { 
 	FIRST_FETCH,
 	FETCHING_MORE,
@@ -324,7 +324,7 @@ describe('use-query hook', () => {
 			pollStarted = new Promise(async (resolve) => {
 				hook.waitForNextUpdate().then(() => {
 					hook.waitForNextUpdate().then(() => {
-						console.log(hook.result.current.loadingStatus)
+						// console.log(hook.result.current.loadingStatus)
 						resolve();
 					});
 				});

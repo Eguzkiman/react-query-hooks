@@ -63,7 +63,6 @@ export function useQuery (query, options={}) {
 	}
 
 	async function poll (params) {
-		console.log('hithere')
 		pollTimeout.current = setTimeout(async () => {
 			if (!options.skip)
 				await fetch(params, POLLING);
