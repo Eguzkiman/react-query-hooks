@@ -9,6 +9,10 @@ dist
 lib
 .rpt2_cache
 
+# test-related files
+/coverage.data
+/coverage/
+
 # misc
 .DS_Store
 .env
