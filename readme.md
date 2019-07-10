@@ -61,7 +61,7 @@ When the promise resolves, the resolved value is set to result
 
 And that's pretty much it. Your code should end up looking somewhat like this:
 ```jsx
-import axios from 'axios';a
+import axios from 'axios';
 import { useQuery } from 'react-query-hooks';
 
 const USERS_URL = "https://jsonplaceholder.typicode.com/users";
@@ -70,7 +70,7 @@ function Userlist () {
 	let users = useQuery(() => axios(USERS_URL));
 
 	if (users.loading) return <p>Loading...</p>;
-	if (users.error) return <p>Error!</p>
+	if (users.error) return <p>Error!</p>;
 
 	return <ul>
 		{users.result.data.map(user => <li>{user.name}</li>)}
