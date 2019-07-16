@@ -1,4 +1,6 @@
-# Data fetching with React Hooks, batteries included
+# Data fetching with React Hooks, batteries included 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Eguzkiman/react-query-hooks/issues)
+
 React Query Hooks is the easiest way to manage data fetching in React apps.
 
 It allows you to implement the following features in pretty much one line of code each:
@@ -9,6 +11,26 @@ It allows you to implement the following features in pretty much one line of cod
 * Polling
 
 React Query Hooks comes with useful defaults to let you hit the ground running, yet it’s still fully customizable.
+
+## TL;DR
+```jsx
+import { useQuery } from 'react-query-hooks';
+
+function UserList () {
+    let users = useQuery(FETCH_USERS);
+  
+    if (users.isLoading) return <LoadingState/>;
+    if (users.error) return <ErrorState error={error} retry={users.refetch}/>;
+  
+    return <FlatList
+        data={users.result.data}
+        onEndReached={users.loadMore}
+        onRefresh={users.refetch}
+    />;
+    // LoadingState, ErrorState & FlatList do not come out of the box
+    // Look here for a complete example
+}
+```
 
 ## Installation
 React Query Hooks has zero dependencies, and works with any app using React ^16.8.0
