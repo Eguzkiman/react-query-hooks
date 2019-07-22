@@ -19,18 +19,20 @@ import { useQuery } from 'react-query-hooks';
 function UserList () {
     let users = useQuery(FETCH_USERS);
   
-    if (users.isLoading) return <LoadingState/>;
-    if (users.error) return <ErrorState error={error} retry={users.refetch}/>;
+    if (users.isLoading) return <Loading/>;
+    if (users.error) return <ErrorMsg error={error} retry={users.refetch}/>;
   
-    return <FlatList
+    return <List
         data={users.result.data}
         onEndReached={users.loadMore}
         onRefresh={users.refetch}
     />;
-    // LoadingState, ErrorState & FlatList do not come out of the box
-    // Look here for a complete example
 }
 ```
+
+
+
+_Replace `Loading`, `ErrorMsg` & `List` with your own components. For this example, their source is [here](https://github.com/Eguzkiman/react-query-hooks/blob/master/example/src/components.js)._
 
 ## Installation
 React Query Hooks has zero dependencies, and works with any app using React ^16.8.0
