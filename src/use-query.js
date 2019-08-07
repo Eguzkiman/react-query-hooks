@@ -16,9 +16,11 @@ export function useQuery (query, options={}) {
 	let pollTimeout = useRef(null);
 	let inFlightRequest = useRef(null);
 
+	let reloadWhenTheseValuesChange = options.reloadWhenTheseValuesChange || [];
+
 	useEffect(() => {
 		firstFetch({});
-	}, []);
+	}, [...reloadWhenTheseValuesChange]);
 
 	useEffect(() => {
 		startPolling();
@@ -40,17 +42,15 @@ export function useQuery (query, options={}) {
 
 	async function fetch (params, statusOnBegin, updateResult) {
 		setLoadingStatus(statusOnBegin);
+		if (error) setError(null);
 
 		try {
 			inFlightRequest.current = query(params);
 			let newResult = await inFlightRequest.current;
 			inFlightRequest.current = null;
-			if (error) setTimeout(() => setError(null));
 			let mergedResult = updateResult ? updateResult(result, newResult) : newResult;
-			// setTimeout(() => {
-				setResult(mergedResult);
-				setLoadingStatus(READY);
-			// });
+			setResult(mergedResult);
+			setLoadingStatus(READY);
 		} catch (e) {
 			setError(e);
 			inFlightRequest.current = null;
