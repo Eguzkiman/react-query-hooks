@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import { useQuery } from "react-query-hooks";
+import { useQuery, useAction } from "react-query-hooks";
 import axios from "axios";
 import { ErrorState, Loading, List } from "./components";
 
@@ -9,6 +9,21 @@ const FETCH_USERS = ({ start = 0, limit = 3 } = {}) => {
 		`https://jsonplaceholder.typicode.com/users?_start=${start}&_limit=${limit}`
 	);
 };
+
+function UseActionExample() {
+	let users = useAction(FETCH_USERS);
+	if (users.error) return <ErrorState error={users.error} />;
+	if (users.isLoading) return <Loading />;
+
+	return users.result ? (
+		<List data={users.result.data} />
+	) : (
+		<div>
+			<p>No users loaded yet</p>
+			<button onClick={users.perform}>Load users</button>
+		</div>
+	);
+}
 
 function ReloadExample() {
 	let [count, setCount] = useState(1);
@@ -65,6 +80,12 @@ function App() {
 							Data fetching with React Hooks, batteries included
 						</h2>
 					</div>
+				</div>
+			</section>
+			<section className="section">
+				<div className="container">
+					<h2 className="subtitle">useAction</h2>
+					<UseActionExample />
 				</div>
 			</section>
 			<section className="section">

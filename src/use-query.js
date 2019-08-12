@@ -110,3 +110,16 @@ export function useQuery (query, options={}) {
 		stopPolling
 	}
 }
+
+/*
+	An alias for better semantics. Example:
+	let saveUser = useAction(SAVE_USER);
+	...
+	<button onClick={saveUser.perform}>Save</button>
+*/
+export function useAction (query, options={}) {
+	let queryResult = useQuery(query, { ...options, skip: true });
+	queryResult.perform = queryResult.refetch;
+
+	return queryResult
+}

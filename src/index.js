@@ -1,1 +1,1 @@
-export { useQuery } from './use-query';
+export { useQuery, useAction } from './use-query';
