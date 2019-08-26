@@ -340,23 +340,21 @@ export default function App() {
 					offline, click <i>fetch again</i> and see what happens.
 				</p>
 			</section>
-			<section className="section">
-				<div className="container">
-					<h2 className="title">Refetch on change</h2>
-					<p className="content is-size-4">
-						Often, you'll need to perform a request after some value
-						changes (think an id on the URL, a search term, etc).
-					</p>
-					<p className="content is-size-4">
-						To do so, add <code>reloadWhenTheseValuesChange</code>{" "}
-						to the options parameter of <code>useQuery</code>, like
-						so:
-					</p>
-					<ExampleWidget
-						example={<ReloadExample />}
-						source={ReloadExampleSrc}
-					/>
-				</div>
+			<section className="section container">
+				<h2 className="title">Refetch on change</h2>
+				<p className="content is-size-4">
+					Often, you'll need to perform a request after some value
+					changes (think an id on the URL, a search term, etc).
+				</p>
+				<p className="content is-size-4">
+					To do so, add <code>reloadWhenTheseValuesChange</code>{" "}
+					to the options parameter of <code>useQuery</code>, like
+					so:
+				</p>
+				<ExampleWidget
+					example={<ReloadExample />}
+					source={ReloadExampleSrc}
+				/>
 			</section>
 			<section className="section container">
 				<h2 className="title">Pagination</h2>
