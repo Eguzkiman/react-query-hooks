@@ -7,6 +7,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-query-hooks": "link:..",
+    "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-syntax-highlighter": "^11.0.2"
   },
