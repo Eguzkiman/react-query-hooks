@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import ExampleWidget from "../components/example-widget";
 import { useQuery } from "react-query-hooks";
 import { ErrorState, Loading, List } from "../components/example-components";
@@ -37,27 +39,50 @@ function UserList () {
 
 export default function GettingStarted() {
     return (
-        <section className="section container">
-            <h2 className="title">Declarative data fetching</h2>
-            <p className="content is-size-4">
-                Handling loading states, error states, refetching conditions,
-                pagination, polling, etc, <b>is painful</b>. But it can be made
-                much easier by doing it <i>declaratively</i>. React Query Hooks
-                helps you do exactly that.
-            </p>
-            <br />
-            <h2 className="title">TD;LR</h2>
-            <ExampleWidget example={<TDLR />} source={tdlrSource} />
-            <p className="content is-size-4">
-                <code>useQuery</code> helps you abstract away the usage of{" "}
-                <code>async / await</code>, along with the{" "}
-                <code>try / catch</code> block that usually comes with it. This
-                way, you can write complex async interactions{" "}
-                <i>without worrying</i> about promise resolution or rejection or
-                callback hell.
-            </p>
-            <p className="content is-size-4"></p>
-        </section>
+        <div>
+            <section className="section container">
+                <h2 className="title">Declarative data fetching</h2>
+                <p className="content is-size-4">
+                    Handling loading states, error states, refetching
+                    conditions, pagination, polling, etc, <b>is painful</b>. But
+                    it can be made much easier by doing it <i>declaratively</i>.
+                    React Query Hooks helps you do exactly that.
+                </p>
+                <br />
+                <h2 className="title">TD;LR</h2>
+                <ExampleWidget example={<TDLR />} source={tdlrSource} />
+                <p className="content is-size-4">
+                    <code>useQuery</code> helps you abstract away the usage of{" "}
+                    <code>async / await</code>, along with the{" "}
+                    <code>try / catch</code> block that usually comes with it.
+                    This way, you can write complex async interactions{" "}
+                    <i>without worrying</i> about promise resolution or
+                    rejection or callback hell.
+                </p>
+                <p className="content is-size-4">
+                    There's much more you can do with{" "}
+                    <code>react-query-hooks</code>, from pagination & polling to
+                    conditional refetching.{" "}
+                    <Link to="/recipes">Find more examples here.</Link>
+                </p>
+                <p className="content is-size-4">
+                    For a deeper dive into declarative data fetching, and why
+                    it's awesome, <Link to="/why">look here</Link>.
+                </p>
+                <h2 className="title">Installation</h2>
+                <p className="content is-size-4">
+                    React Query Hooks has zero dependencies, and works with any
+                    app using React ^16.8.0 To install:
+                </p>
+                <p className="content is-size-4">
+                    <pre>yarn add react-query-hooks</pre>
+                </p>
+                <p className="content is-size-4">Or with npm:</p>
+                <p className="content is-size-4">
+                    <pre>npm install --save react-query-hooks</pre>
+                </p>
+            </section>
+        </div>
     );
 }
 

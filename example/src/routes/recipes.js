@@ -146,7 +146,7 @@ function ReloadExample() {
 			<input
 				type="text"
 				className="input"
-				placeholder="Type a user id to search"
+				placeholder="Type a user's name to search"
 				value={search}
 				onChange={event => setSearch(event.target.value)}
 			/>

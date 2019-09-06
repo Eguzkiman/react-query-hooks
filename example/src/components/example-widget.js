@@ -26,7 +26,7 @@ export default function ExampleWidget({ example, source }) {
 				</div>
 				<div className="column">
 					<h3 className="subtitle">
-						Example
+						Result
 						<a href="#" className="is-pulled-right" onClick={reset}>
 							reset
 						</a>
